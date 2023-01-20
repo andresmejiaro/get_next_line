@@ -6,7 +6,7 @@
 /*   By: amejia <amejia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 15:14:22 by amejia            #+#    #+#             */
-/*   Updated: 2023/01/19 22:41:37 by amejia           ###   ########.fr       */
+/*   Updated: 2023/01/20 16:22:07 by amejia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void self_reference_free(char **target, char *other,char *(*f)(const char *,cons
 void	*ft_calloc(size_t count, size_t size)
 {
 	void	*mem;
-	int 	counter;
+	size_t	counter;
 
 	mem = malloc(count * size);
 	if (mem == 0)

@@ -6,7 +6,7 @@
 /*   By: amejia <amejia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/19 15:10:13 by amejia            #+#    #+#             */
-/*   Updated: 2023/01/19 18:47:01 by amejia           ###   ########.fr       */
+/*   Updated: 2023/01/20 21:06:20 by amejia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,14 @@ size_t	ft_strlcat(char *s1, char *s2, size_t nb);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
+char	*ft_substr(char const *s, unsigned int start, unsigned int len);
+void self_reference_free(char **target, char *other,char *(*f)(const char *,const char *));
+void	*ft_calloc(size_t count, size_t size);
+char *get_next_line(int fd);
+char *initialize_get_next_line(int *n_char_read, char **buffer, char **leftover, int fd);
 
 #endif
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE  (2)
+# define BUFFER_SIZE  (42)
 #endif

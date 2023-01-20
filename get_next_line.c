@@ -1,58 +1,74 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: amejia <amejia@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/19 15:32:18 by amejia            #+#    #+#             */
-/*   Updated: 2023/01/19 23:42:40 by amejia           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "get_next_line.h"
-#include "get_next_line_utils.c"
 
-char *initialize_get_next_line(int *n_char_read, char **buffer, char **leftover)
+int check_errors(fd)
 {
-    if (*leftover == 0)
+    if (fd <0 || fd > 1023 || read(fd,0,0) == -1)
+		return (0);
+    return (1);
+}
+
+
+char *create_line_from_left(char **left)
+{
+    char *breakpoint;
+    char *before;
+    char *after;
+    char *old;
+
+    breakpoint = ft_strchr(*left,'\n');
+    if (breakpoint == 0)
+        return(*left);
+    before = ft_substr(*left,0,(int)(breakpoint - *left+1));
+    after = ft_substr(breakpoint+1,0,ft_strlen(breakpoint+1));
+    old = *left;
+    *left = after;
+    free(old);
+    return(before);
+}
+
+char *read_from_file(int fd,char **left)
+{
+    char buffer[BUFFER_SIZE+1];
+    char *old;
+    int k;
+
+    k=-1;
+    while(k++ < BUFFER_SIZE )
+        buffer[k]='\0';
+    if(*left == 0)
+        *left = ft_calloc(1,1);
+    if((read(fd,buffer,BUFFER_SIZE)))
     {
-        *leftover =(char *) ft_calloc(1,1);
-        *n_char_read = BUFFER_SIZE;
+        old = *left;
+        *left=ft_strjoin(*left,buffer);
+        free(old);
+        if(ft_strchr(*left,'\n'))
+            return(create_line_from_left(left));
+        else
+            return(read_from_file(fd,left));
     }
-    if (ft_strlen(*leftover) == 0 && *n_char_read < BUFFER_SIZE)
-        return 0;
-    *buffer =(char *) ft_calloc(BUFFER_SIZE+1,1);
-    return ((char *) ft_calloc(1,1));   
+    else if(ft_strlen(*left)==0)
+    {
+        free(*left);
+        *left = 0;
+        return(0);
+    }
+    else
+        old = ft_substr(*left,0,ft_strlen(*left));
+        free (*left);
+        *left = 0;
+        return(old);
 }
 
 char *get_next_line(int fd)
 {
-    char *buffer;
-    char *line;
-    static char *leftover;
-    static int n_char_read;
-    char *position;
-    char *temp;
-    
-    if(!(line = initialize_get_next_line(&n_char_read, &buffer, &leftover)))
+    static char *left;
+
+    if (!check_errors(fd))
         return 0;
-    while (!(position=ft_strchr(leftover,'\n')))
-    {
-       if(n_char_read < BUFFER_SIZE)
-        {
-            self_reference_free(&line,leftover,ft_strjoin);
-            ft_strlcpy(leftover,"",1);
-            return(free(buffer),line);
-        } 
-        else if((n_char_read = read(fd,buffer,BUFFER_SIZE)))
-                self_reference_free(&leftover,buffer,ft_strjoin);
-    }
-    temp = ft_substr(leftover,0,(int)(position - leftover+1));
-    self_reference_free(&line,temp,ft_strjoin);
-    free(temp);
-    temp = ft_substr(position+1,0,ft_strlen(position+1));
-    free(leftover);
-    leftover = temp;
-    return(free(buffer),line);
+    if (left != 0 && ft_strchr(left,'\n'))
+        return(create_line_from_left(&left));
+    else 
+        return(read_from_file(fd,&left));
 }
+

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amejia <amejia@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 15:26:08 by amejia            #+#    #+#             */
-/*   Updated: 2023/01/22 15:36:35 by amejia           ###   ########.fr       */
+/*   Updated: 2023/01/22 15:48:56 by amejia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,12 @@ char	*read_from_file(int fd, char **left)
 
 char	*get_next_line(int fd)
 {
-	static char	*left;
+	static char	*left[1024];
 
 	if (fd < 0 || fd > 1023)
 		return (0);
-	if (left != 0 && ft_strchr(left, '\n'))
-		return (create_line_from_left(&left));
+	if (left[fd] != 0 && ft_strchr(left[fd], '\n'))
+		return (create_line_from_left(&left[fd]));
 	else
-		return (read_from_file(fd, &left));
+		return (read_from_file(fd, &left[fd]));
 }
